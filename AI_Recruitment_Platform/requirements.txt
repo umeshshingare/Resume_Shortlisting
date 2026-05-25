@@ -19,3 +19,4 @@ psycopg2-binary>=2.9.9
 dj-database-url>=2.1.0
 cloudinary>=1.39.0
 django-cloudinary-storage>=0.3.0
+django-browser-reload>=1.12.1

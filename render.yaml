@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: resume-shortlisting
+    env: python
+    rootDir: AI_Recruitment_Platform
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn project_config.wsgi:application"
+    plan: free
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: DATABASE_URL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true

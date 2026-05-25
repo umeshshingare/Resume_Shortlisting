@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-bg hr-theme rounded-4 shadow-lg overflow-hidden my-4" style="min-height: 70vh;">
+    <div class="row g-0 h-100" style="min-height: 70vh;">
+        <!-- Left Side - Visuals -->
+        <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center p-5 text-white" style="background: rgba(0,0,0,0.25); backdrop-filter: blur(5px);">
+            <div class="text-center" style="z-index: 1;">
+                <i class="fas fa-chart-network fa-4x mb-4 text-white hover-shadow" style="animation: float 8s ease-in-out infinite;"></i>
+                <h2 class="fw-bold display-6 mb-3 text-shadow">HR Portal Portal</h2>
+                <p class="lead opacity-75">Streamline your recruitment pipeline. Manage talent, post jobs, and leverage AI to build your dream team.</p>
+            </div>
+        </div>
+        <!-- Right Side - Form -->
+        <div class="col-lg-6 py-5 px-4 px-md-5 d-flex align-items-center bg-white bg-opacity-75" style="backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);">
+            <div class="w-100" style="z-index: 1;">
+                <div class="text-center mb-5">
+                    <h3 class="fw-bold text-dark"><i class="fas fa-user-tie me-2" style="color: #8e44ad;"></i> HR Portal Login</h3>
+                    <p class="text-muted fw-semibold">Authorized Personnel Only</p>
+                </div>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger rounded-3 border-0 shadow-sm">
+                            {% for error in form.non_field_errors %}
+                                <div><i class="fas fa-exclamation-circle me-1"></i> {{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark small ms-1 mb-1">HR Username</label>
+                        <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden">
+                            <span class="input-group-text bg-white border-0 pe-1"><i class="fas fa-id-badge" style="color: #8e44ad;"></i></span>
+                            <input type="text" name="username" class="form-control border-0 ps-2" placeholder="Enter HR username" required autofocus>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="form-label fw-semibold text-dark small ms-1 mb-1">Secure Password</label>
+                        <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden">
+                            <span class="input-group-text bg-white border-0 pe-1"><i class="fas fa-key" style="color: #8e44ad;"></i></span>
+                            <input type="password" name="password" class="form-control border-0 ps-2" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mb-4">
+                         <button type="submit" class="btn text-white btn-premium btn-lg w-100 shadow border-0" style="background: linear-gradient(to right, #8e44ad 0%, #3498db 100%);">Login to Dashboard <i class="fas fa-arrow-right ms-2"></i></button>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <a href="{% url 'login' %}" class="small text-muted text-decoration-none fw-medium hover-text-primary transition-all"><i class="fas fa-exchange-alt me-1"></i> Switch to Candidate Login</a>
+                    </div>
+                    
+                    <div class="text-center mt-4 pt-3 border-top border-dark border-opacity-10">
+                        <p class="mb-0 text-dark fw-medium">New HR Personnel? <a href="{% url 'hr_register' %}" class="fw-bold text-decoration-none" style="color: #8e44ad;">Register Here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

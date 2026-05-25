@@ -1,0 +1,182 @@
+{% extends 'hr_base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-users text-primary me-2"></i>All Applicants</h2>
+    <div class="d-flex gap-2">
+        <!-- AI Bulk Shortlist Form -->
+        <form action="{% url 'ai_shortlist_global' %}" method="post" class="d-flex align-items-center m-0 p-0">
+            {% csrf_token %}
+            <div class="input-group">
+                <span class="input-group-text bg-white text-muted"><i class="fas fa-magic text-warning me-2"></i>Threshold</span>
+                <input type="number" name="threshold" id="threshold" value="60" min="0" max="100" class="form-control text-center fw-bold" style="max-width: 65px;">
+                <span class="input-group-text bg-light">%</span>
+                <button type="submit" class="btn btn-primary fw-bold px-3">Auto-Select</button>
+            </div>
+        </form>
+
+        <!-- AI Sort Dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown">
+                <i class="fas fa-robot me-1"></i> AI Sort: 
+                {% if current_sort == 'resume_score' %}Resume Score
+                {% elif current_sort == 'match_score' %}Match Score
+                {% elif current_sort == 'date' %}Date
+                {% elif current_sort == 'name' %}Name
+                {% endif %}
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item {% if current_sort == 'match_score' %}active{% endif %}" href="?sort=match_score">
+                    <i class="fas fa-bullseye text-success me-2"></i>Match Score (Job Fit)
+                </a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item {% if current_sort == 'date' %}active{% endif %}" href="?sort=date">
+                    <i class="fas fa-calendar me-2"></i>Date Applied
+                </a></li>
+                <li><a class="dropdown-item {% if current_sort == 'name' %}active{% endif %}" href="?sort=name">
+                    <i class="fas fa-sort-alpha-down me-2"></i>Name
+                </a></li>
+            </ul>
+        </div>
+        <!-- Export CSV Dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-success dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown">
+                <i class="fas fa-file-csv me-1"></i> Export CSV
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><h6 class="dropdown-header">Export as CSV</h6></li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'export_csv' %}?status=ALL">
+                        <i class="fas fa-users text-primary me-2"></i>All Applicants
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'export_csv' %}?status=SHORTLISTED">
+                        <i class="fas fa-check-circle text-success me-2"></i>Shortlisted Only
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'export_csv' %}?status=PENDING">
+                        <i class="fas fa-clock text-warning me-2"></i>Pending Only
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'export_csv' %}?status=REJECTED">
+                        <i class="fas fa-times-circle text-danger me-2"></i>Rejected Only
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Candidate</th>
+                    <th>Applied For</th>
+                    <th>Date</th>
+                    <th><i class="fas fa-bullseye text-success"></i> Match Score</th>
+                    <th>Status</th>
+                    <th>Resume</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <a href="{% url 'view_applicant' app.applicant_profile.id %}" class="text-decoration-none">
+                                <div class="avatar bg-light rounded-circle p-2 me-2">
+                                    <i class="fas fa-user text-secondary"></i>
+                                </div>
+                            </a>
+                            <div>
+                                <a href="{% url 'view_applicant' app.applicant_profile.id %}" class="text-decoration-none text-dark hover-primary">
+                                    <div class="fw-bold">{{ app.applicant_profile.first_name }} {{ app.applicant_profile.last_name }}</div>
+                                </a>
+                                <div class="small text-muted">{{ app.user.email }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ app.job.title }}</td>
+                    <td>{{ app.applied_date|date:"M d, Y" }}</td>
+                    <td>
+                        <!-- Dynamic Job Match Score -->
+                        <span class="match-score-badge fw-bold">{{ app.match_score }}%</span>
+                    </td>
+                    <td>
+                        {% if app.status == 'PENDING' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif app.status == 'SHORTLISTED' %}
+                            <span class="badge bg-success">Shortlisted</span>
+                        {% elif app.status == 'REJECTED' %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ app.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if app.applicant_profile.resume_file %}
+                            <a href="{{ app.applicant_profile.resume_file.url }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-file-pdf"></i> View
+                            </a>
+                        {% else %}
+                            <span class="text-muted">No File</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                    <td>
+                        <div class="d-flex">
+                            <a href="{% url 'update_status' app.id 'SHORTLISTED' %}" class="btn btn-sm btn-success me-2" title="Shortlist">
+                                <i class="fas fa-check"></i>
+                            </a>
+                            <a href="{% url 'update_status' app.id 'REJECTED' %}" class="btn btn-sm btn-danger" title="Reject">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        </div>
+                    </td>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-5 text-muted">
+                        <i class="fas fa-users-slash fa-2x mb-3"></i><br>
+                        No applications received yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const thresholdInput = document.getElementById('threshold');
+    
+    function updateColors() {
+        if (!thresholdInput) return;
+        const threshold = parseFloat(thresholdInput.value) || 0;
+        const scoreElements = document.querySelectorAll('.match-score-badge');
+        
+        scoreElements.forEach(el => {
+            const score = parseFloat(el.innerText) || 0;
+            el.className = 'match-score-badge fw-bold'; // Reset classes
+            
+            if (score >= threshold) {
+                el.classList.add('text-success');
+            } else {
+                el.classList.add('text-danger');
+            }
+        });
+    }
+
+    if (thresholdInput) {
+        thresholdInput.addEventListener('input', updateColors);
+        updateColors(); // Run once on page load
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'hr_base.html' %}
+{% block content %}
+<div class="container mt-2">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow border-0 mb-5" style="border-radius: 1.2rem; overflow: hidden; box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1) !important;">
+                <div class="card-header border-0 text-white py-4 px-4" style="background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);">
+                    <h4 class="mb-0 fw-bold d-flex align-items-center">
+                        <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                            <i class="fas fa-magic fs-5"></i>
+                        </div>
+                        {% if is_edit %}Edit AI Job Listing{% else %}Create AI Job Listing{% endif %}
+                    </h4>
+                    <p class="mb-0 mt-2 text-white-50 small">Define the parameters of your ideal candidate. Our AI will automatically parse these requirements against all resumes.</p>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.5px;">Job Title</label>
+                                <input type="text" name="title" class="form-control form-control-lg bg-light border-0 py-3 text-secondary" placeholder="e.g. Senior Software Engineer" value="{{ job.title|default:'' }}" required style="border-radius: 0.8rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.5px;">Company</label>
+                                <input type="text" name="company" class="form-control form-control-lg bg-light border-0 py-3 text-secondary" placeholder="e.g. OpenAI" value="{{ job.company|default:'' }}" required style="border-radius: 0.8rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.5px;">Location</label>
+                                <input type="text" name="location" class="form-control form-control-lg bg-light border-0 py-3 text-secondary" placeholder="e.g. Pune, India" value="{{ job.location|default:'' }}" required style="border-radius: 0.8rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.5px;">Salary</label>
+                                <input type="text" name="salary" class="form-control form-control-lg bg-light border-0 py-3 text-secondary" placeholder="e.g. ₹12L - ₹15L" value="{{ job.salary|default:'' }}" style="border-radius: 0.8rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.5px;">Experience</label>
+                                <input type="text" name="experience" class="form-control form-control-lg bg-light border-0 py-3 text-secondary" placeholder="e.g. 2-5 Yrs" value="{{ job.experience|default:'' }}" required style="border-radius: 0.8rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                            </div>
+                            
+                            <div class="col-12 mt-4">
+                                <label class="form-label fw-bold text-dark small text-uppercase" style="letter-spacing: 0.5px;">Description</label>
+                                <textarea name="description" class="form-control bg-light border-0 py-3 text-secondary" rows="5" placeholder="Describe the role, responsibilities, and benefits..." required style="border-radius: 0.8rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">{{ job.description|default:'' }}</textarea>
+                            </div>
+                            
+                            <div class="col-12 mt-4">
+                                <div class="d-flex justify-content-between align-items-end mb-2">
+                                    <label class="form-label fw-bold text-dark small text-uppercase mb-0" style="letter-spacing: 0.5px;">Required Skills</label>
+                                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle py-1 px-2 rounded-pill"><i class="fas fa-robot me-1"></i> Core Match Parameters</span>
+                                </div>
+                                <input type="text" name="skills" class="form-control form-control-lg bg-light border-2 border-primary-subtle py-3 text-dark fw-medium" placeholder="Python, Django, React, SQL" value="{{ job.required_skills|default:'' }}" style="border-radius: 0.8rem;">
+                                <div class="form-text mt-2"><i class="fas fa-info-circle text-primary me-1"></i> These keywords map directly to the AI Candidate Vectorizer for instant precision ranking. Separate multiple skills with closely spaced commas.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-3 mt-5 border-top pt-4">
+                            <button type="submit" class="btn btn-lg flex-grow-1 fw-bold text-white shadow-sm" style="background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); border: none; border-radius: 0.8rem;">
+                                {% if is_edit %}Update Core Strategy{% else %}Deploy AI Listing{% endif %} <i class="fas fa-paper-plane ms-2"></i>
+                            </button>
+                            <a href="{% url 'hr_dashboard' %}" class="btn btn-light btn-lg text-secondary border px-4 fw-bold shadow-sm hover-elevate" style="border-radius: 0.8rem;">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

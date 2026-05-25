@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-bg hr-theme rounded-4 shadow-lg overflow-hidden my-4" style="min-height: 70vh;">
+    <div class="row g-0 h-100">
+        <!-- Left Side - Visuals -->
+        <div class="col-lg-5 d-none d-lg-flex flex-column align-items-center justify-content-center p-5 text-white" style="background: rgba(0,0,0,0.25); backdrop-filter: blur(5px); min-height: 100%;">
+            <div class="text-center" style="z-index: 1;">
+                <i class="fas fa-users-cog fa-4x mb-4 text-white hover-shadow" style="animation: float 8s ease-in-out infinite;"></i>
+                <h2 class="fw-bold display-6 mb-3 text-shadow">HR Registration</h2>
+                <p class="lead opacity-75">Join as an HR to orchestrate the hiring process, review AI-scored applications, and source top candidates effortlessly.</p>
+            </div>
+            <div class="mt-5 text-center" style="z-index: 1;">
+                 <p class="small text-white-50 mt-5">Already an authorized HR?</p>
+                 <a href="{% url 'hr_login' %}" class="btn btn-outline-light rounded-pill px-5 fw-bold shadow-sm">Login to Portal</a>
+            </div>
+        </div>
+        <!-- Right Side - Form -->
+        <div class="col-lg-7 py-5 px-4 px-md-5 bg-white bg-opacity-75" style="backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);">
+            <div class="w-100" style="z-index: 1;">
+                <div class="text-center mb-5">
+                    <h3 class="fw-bold text-dark"><i class="fas fa-user-shield me-2" style="color: #3498db;"></i> Create HR Account</h3>
+                    <p class="text-muted fw-semibold">Supervise recruitment and analytics.</p>
+                </div>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger rounded-3 border-0 shadow-sm">
+                            {% for error in form.non_field_errors %}
+                                <div><i class="fas fa-exclamation-circle me-1"></i> {{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="row g-3">
+                        {% for field in form %}
+                        <div class="col-md-{% if field.name == 'username' or field.name == 'email' %}12{% else %}6{% endif %} mb-3">
+                            <label class="form-label fw-semibold text-dark small ms-1 mb-1">{{ field.label }}</label>
+                            
+                            <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden">
+                                <span class="input-group-text bg-white border-0 pe-1">
+                                    {% if 'password' in field.name.lower %}
+                                        <i class="fas fa-lock" style="color: #3498db;"></i>
+                                    {% elif 'email' in field.name.lower %}
+                                        <i class="fas fa-envelope" style="color: #3498db;"></i>
+                                    {% elif 'username' in field.name.lower %}
+                                        <i class="fas fa-id-card" style="color: #3498db;"></i>
+                                    {% else %}
+                                        <i class="fas fa-pen" style="color: #3498db;"></i>
+                                    {% endif %}
+                                </span>
+                                {{ field }}
+                            </div>
+                            
+                            {% if field.errors %}
+                                <div class="text-danger small ms-1 mt-1">{{ field.errors.0 }}</div>
+                            {% endif %}
+                            {% if field.help_text %}
+                                <div class="form-text small ms-1" style="font-size: 0.75rem;">{{ field.help_text }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Fix standard Django form.control styling via JS snippet below since Django generated inputs don't have our custom classes immediately -->
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const inputs = document.querySelectorAll('form input');
+                            inputs.forEach(input => {
+                                input.classList.add('form-control', 'border-0', 'ps-2');
+                                if(!input.placeholder) {
+                                    input.placeholder = "Enter " + input.name.replace(/_/g, " ");
+                                }
+                            });
+                        });
+                    </script>
+
+                    <div class="d-grid gap-2 mt-4">
+                         <button type="submit" class="btn text-white btn-premium btn-lg w-100 shadow border-0 py-3" style="background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);">Register HR Account <i class="fas fa-rocket ms-2"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

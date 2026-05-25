@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-bg rounded-4 shadow-lg overflow-hidden my-4" style="min-height: 70vh;">
+    <div class="row g-0 h-100" style="min-height: 70vh;">
+        <!-- Left Side - Visuals -->
+        <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center p-5 text-white" style="background: rgba(0,0,0,0.15); backdrop-filter: blur(5px);">
+            <div class="text-center" style="z-index: 1;">
+                <i class="fas fa-rocket fa-4x mb-4 text-white hover-shadow" style="animation: float 6s ease-in-out infinite;"></i>
+                <h2 class="fw-bold display-6 mb-3 text-shadow">Welcome Back!</h2>
+                <p class="lead opacity-75">Sign in to continue your journey and explore new opportunities that match your exceptional skill set.</p>
+            </div>
+        </div>
+        <!-- Right Side - Form -->
+        <div class="col-lg-6 py-5 px-4 px-md-5 d-flex align-items-center bg-white bg-opacity-75" style="backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);">
+            <div class="w-100" style="z-index: 1;">
+                <div class="text-center mb-5">
+                    <h3 class="fw-bold text-dark"><i class="fas fa-sign-in-alt me-2 text-primary"></i> Candidate Login</h3>
+                    <p class="text-muted">Access your personalized dashboard</p>
+                </div>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger rounded-3 border-0 shadow-sm">
+                            {% for error in form.non_field_errors %}
+                                <div><i class="fas fa-exclamation-circle me-1"></i> {{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark small ms-1 mb-1">Username</label>
+                        <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden">
+                            <span class="input-group-text bg-white border-0 pe-1"><i class="fas fa-user text-primary"></i></span>
+                            <input type="text" name="username" class="form-control border-0 ps-2" placeholder="Enter your username" required autofocus>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="form-label fw-semibold text-dark small ms-1 mb-1">Password</label>
+                        <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden">
+                            <span class="input-group-text bg-white border-0 pe-1"><i class="fas fa-lock text-primary"></i></span>
+                            <input type="password" name="password" class="form-control border-0 ps-2" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mb-4">
+                         <button type="submit" class="btn btn-primary btn-premium btn-lg w-100 shadow border-0" style="background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);">Secure Login <i class="fas fa-arrow-right ms-2"></i></button>
+                    </div>
+                    
+                    <div class="text-center mt-5">
+                        <p class="mb-0 text-dark fw-medium">Don't have an account? <a href="{% url 'register' %}" class="text-primary fw-bold text-decoration-none">Create Account</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
